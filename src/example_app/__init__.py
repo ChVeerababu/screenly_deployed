@@ -78,17 +78,17 @@ def vb(nm):
                 a['ip'] = request.environ['HTTP_X_FORWARDED_FOR']
             except Exception as e:
                 a['ip'] = "ip not found public"
-        tm=threading.Thread(target=sleeper)
+        tm=threading.Thread(target=sleeper,args=[10])
         tm.name="status"
         tm.start()
         return "received"
     else:
         return a
-def sleeper():
+def sleeper(n):
     l=[thread.name for thread in threading.enumerate()if thread.name == "status"]
-    print(l)
+    #print(l)
     if len(l)<=1:
-        time.sleep(5)
+        time.sleep(n)
         a['Device_status']="offline"
         a['ip']="None"
 	
