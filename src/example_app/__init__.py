@@ -62,37 +62,36 @@ def sendtoserver(frame):
 @app.route('/')
 def sample():
     return "This application running"
-
 a={'Device_status':"status",'ip':"ip_adress"}
             
-@app.route('/<string:nm>',methods=['POST'])
+@app.route('/<string:nm>',methods=['GET','PUT'])
 def vb(nm):
-	#print(dir(request))
-	try:
-		if request.method=="POST":
-			a['Device_status']=nm
-			time.sleep(5)
-			a['Device_status']="offline"
-			a['ip']="None"
-# 			if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
-# 				try:
-# 					a['ip'] = request.environ['REMOTE_ADDR']
-# 				except Exception as e:
-# 					a['ip'] = "ip not found local"
-# 			else:
-# 				try:
-# 				    	a['ip'] = request.environ['HTTP_X_FORWARDED_FOR']
-# 				except Exception as e:
-# 				    	a['ip'] = "ip not found public"
-
-
-
-		return "received"
-	except:
-		return "not working"
-@app.route('/pistatus')
-def datta():
-	return a['Device_status']
+    if request.method=="PUT":
+        a['Device_status']=nm
+        if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+            try:
+                a['ip'] = request.environ['REMOTE_ADDR']
+            except Exception as e:
+                a['ip'] = "ip not found local"
+        else:
+            try:
+                a['ip'] = request.environ['HTTP_X_FORWARDED_FOR']
+            except Exception as e:
+                a['ip'] = "ip not found public"
+        tm=threading.Thread(target=sleeper)
+        tm.name="status"
+        tm.start()
+        return "received"
+    else:
+        return a
+def sleeper():
+    l=[thread.name for thread in threading.enumerate()if thread.name == "status"]
+    print(l)
+    if len(l)<=1:
+        time.sleep(5)
+        a['Device_status']="offline"
+        a['ip']="None"
+	
 @app.route('/ads', methods = ['GET','POST'])
 def index():
     if request.method == 'POST':
