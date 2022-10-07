@@ -13,7 +13,7 @@ from aws_rds import insert_details
 from flask import Flask,request
 import threading
 import queue
-from rule_engine import get_asset_data,get_ruleengine_data,get_rule_data,get_latlng_data,get_device_data,get_cam_data,get_asset,get_asset_id,get_rule_id,get_latlng,get_device,get_cam
+from rule_engine import get_asset_data,get_ruleengine_data,get_rule_data,get_latlng_data,get_device_data,get_cam_data,get_asset,get_asset_id,get_rule_id,get_latlng,get_device,get_cam,get_call_data
 import concurrent.futures
 
 app = Flask(__name__)
@@ -62,6 +62,12 @@ def sendtoserver(frame):
 @app.route('/')
 def sample():
     return "This application running"
+
+@app.route('/update_database_data')
+def call_rule_engine():
+    get_call_data()
+    return "updated"
+
 a={'Device_status':"status",'ip':"ip_adress"}
             
 @app.route('/<string:nm>',methods=['GET','PUT'])
