@@ -1,4 +1,4 @@
-from aws_rds import get_ruleEngine,get_latlng,get_device,get_cam,get_asset,get_rule_id
+import aws_rds
 import pandas as pd
 import os
 
@@ -8,12 +8,9 @@ def get_ruleengine_data():
     if(os.path.exists(file_name) and os.path.isfile(file_name)):
         os.remove(file_name)
         print("file deleted")
-    a=get_ruleEngine()
+    a=aws_rds.get_ruleEngine()
     df = pd.DataFrame(a,columns=['id','site_id','rule','asset','device_type','device_id'])
-    #print(df)
-    #outfile = open(file_name, 'w')
     df.to_csv('rule_engine.csv',index=False,header=True)
-    #outfile.close()  
     print("file_created")
 
 
@@ -22,9 +19,9 @@ def get_asset_data():
     if(os.path.exists(file_name) and os.path.isfile(file_name)):
         os.remove(file_name)
         print("file deleted")
-    a=get_asset()
+    a=aws_rds.get_asset()
     df = pd.DataFrame(a,columns=['id','asset'])
-    df.to_csv('assets.csv',index=False,header=True,na_rep='Unkown',)
+    df.to_csv('assets.csv',index=False,header=True)
     print("file_created")    
 
 def get_rule_data():
@@ -32,7 +29,7 @@ def get_rule_data():
     if(os.path.exists(file_name) and os.path.isfile(file_name)):
         os.remove(file_name)
         print("file deleted")
-    a=get_rule_id()
+    a=aws_rds.get_rule_id()
     df = pd.DataFrame(a,columns=['name','id'])
     df.to_csv('rules.csv',index=False,header=True)
     print("file_created")  
@@ -43,7 +40,7 @@ def get_latlng_data():
     if(os.path.exists(file_name) and os.path.isfile(file_name)):
         os.remove(file_name)
         print("file deleted")
-    a=get_latlng()
+    a=aws_rds.get_latlng()
     df = pd.DataFrame(a,columns=['siteId','latitude','longitude'])
     df.to_csv('sites.csv',index=False,header=True)
     print("file_created")  
@@ -53,7 +50,7 @@ def get_device_data():
     if(os.path.exists(file_name) and os.path.isfile(file_name)):
         os.remove(file_name)
         print("file deleted")
-    a=get_device()
+    a=aws_rds.get_device()
     df = pd.DataFrame(a,columns=['deviceId','deviceName','deviceTypeId','siteId','temp_range','age_range','Demographics','device_ip'])
     df.to_csv("devices.csv",index=False,header=True)
     print("file_created") 
@@ -64,17 +61,20 @@ def get_cam_data():
     if(os.path.exists(file_name) and os.path.isfile(file_name)):
         os.remove(file_name)
         print("file deleted")
-    a=get_cam()
+    a=aws_rds.get_cam()
     df = pd.DataFrame(a,columns=['cameraId','deviceId','siteId','potentialId'])
     df.to_csv("camera.csv",index=False,header=True)
     print("file_created")  
+def get_call_data():
+    get_ruleengine_data()
+    get_asset_data()
+    get_latlng_data()
+    get_rule_data()
+    get_cam_data()
+    get_device_data()
+    return "updated"
 
-get_ruleengine_data()
-get_asset_data()
-get_latlng_data()
-get_rule_data()
-get_cam_data()
-get_device_data()
+asdf = get_call_data()
 
 df = pd.read_csv('rule_engine.csv')
 df1 = pd.read_csv('assets.csv',index_col ="id")
